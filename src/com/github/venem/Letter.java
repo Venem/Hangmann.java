@@ -25,6 +25,7 @@ public class Letter {
 	// Tried to make it final but apparently you can't declare it without setting
 	// and set the variable later so 🤷
 	private char letter;
+	private boolean found = false;
 
 	// Pass args of class through to setters to lessen the code needed
 	// when instantiating this class
@@ -38,7 +39,23 @@ public class Letter {
 	}
 
 	public char getLetter() {
-		return this.letter;
+		if (found)
+			return this.letter;
+		else
+			return '_';
+	}
+
+	// Only returns true once if the letter has not been found before
+	public boolean foundLetter(char c) {
+		if (this.letter == c && !found) {
+			this.found = true;
+			return true;
+		}
+		return false;
+	}
+
+	public void foundLetter() {
+		foundLetter('\0');
 	}
 
 }

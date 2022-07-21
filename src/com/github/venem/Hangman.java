@@ -26,12 +26,34 @@ import java.util.Scanner;
 
 public class Hangman {
 
-	public static String word = "chocolate";
+	private static String word = "chocolate";
+	private static int lettersFound = 0;
+	// Holds .length() value of current word (not constant because the game has multiple rounds)
+	// More efficient than running .length() over and over
+	private static int WORD_LENGTH;
+
+	private static Scanner inputScanner = new Scanner(System.in);
+	//private static HangmanStage hangmanStageObject = new HangmanStage();
+	public static Letter wordArr[];
 
 	public static void main(String[] args) {
 
+		initialise();
+
+		while (lettersFound < WORD_LENGTH) {
+			printKnownLetters();
+			char c = inputScanner.next().charAt(0);
+			fillLetters(c);
+			System.out.print(lettersFound);
+		}
+
+	}
+
+	public static void initialise() {
+		WORD_LENGTH = word.length();
+
 		// Create an array to contain all objects of the Letter class;
-		Letter wordArr[] = new Letter[word.length()];
+		wordArr = new Letter[WORD_LENGTH];
 		// Convert the chosen word from a String to a char array (for some reason
 		// there is a difference - maybe this is a convention I am too C to understand)
 		// Additional info: this won't be needed when reading words from file
@@ -39,13 +61,25 @@ public class Hangman {
 
 		// Fill the Letter array with objects and pass through the individual
 		// character to the setter - Letter(char c) calls Letter.setLetter(char c)
-		for (int i=0; i<word.length(); i++) {
+		for (int i=0; i<WORD_LENGTH; i++) {
 			wordArr[i] = new Letter(wordAsCharArray[i]);
 		}
+	}
 
-		// Testing to see if it actually works
-		System.out.println(wordArr[8].getLetter());
+	public static void fillLetters(char c) {
+		for (int i=0; i<WORD_LENGTH; i++) {
+			if (wordArr[i].foundLetter(c))
+				lettersFound++;
+			//else
+				//hangmanStageObject.increment();
+		}
+	}
 
+	public static void printKnownLetters() {
+		for (int k=0; k<WORD_LENGTH; k++) {
+			System.out.print(wordArr[k].getLetter());
+		}
+		System.out.println();
 	}
 
 }
