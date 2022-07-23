@@ -27,29 +27,38 @@ import java.util.Scanner;
 public class Hangman {
 
 	private static String word = "chocolate";
-	private static int lettersFound = 0;
+	private static int lettersFound;
 	// Holds .length() value of current word (not constant because the game has multiple rounds)
 	// More efficient than running .length() over and over
 	private static int WORD_LENGTH;
 
 	private static Scanner inputScanner = new Scanner(System.in);
-	//private static HangmanStage hangmanStageObject = new HangmanStage();
+
+	public static HangmanStage hangmanStage;
 	public static Letter wordArr[];
 
 	public static void main(String[] args) {
 
-		initialise();
+		while (true) {
 
-		while (lettersFound < WORD_LENGTH) {
-			printKnownLetters();
-			char c = inputScanner.next().charAt(0);
-			fillLetters(c);
-			System.out.print(lettersFound);
+			initialise();
+
+			while (lettersFound < WORD_LENGTH) {
+				printKnownLetters();
+				char c = inputScanner.next().charAt(0);
+				fillLetters(c);
+				System.out.println(hangmanStage.getStage());
+				System.out.println(hangmanStage.getWrongLetters());
+			}
+
 		}
 
 	}
 
 	public static void initialise() {
+		lettersFound = 0;
+		hangmanStage = new HangmanStage();
+
 		WORD_LENGTH = word.length();
 
 		// Create an array to contain all objects of the Letter class;
@@ -67,19 +76,34 @@ public class Hangman {
 	}
 
 	public static void fillLetters(char c) {
+		boolean foundALetter = false;
 		for (int i=0; i<WORD_LENGTH; i++) {
-			if (wordArr[i].foundLetter(c))
-				lettersFound++;
-			//else
-				//hangmanStageObject.increment();
+			// foundLetter can return 5 options:
+			// 0: letter != char
+			// 1: letter == char (only returned the first time the letter is found)
+			// 2: letter == char
+			// 3: letter not found (only returned if no argument is passed)
+			// 4: letter found (only returned if no argument is passed)
+			// 5: unknown
+			switch (wordArr[i].foundLetter(c)) {
+				case 1:
+					lettersFound++;
+					foundALetter = true;
+					break;
+				case 2:
+					foundALetter = true;
+					break;
+			}
 		}
+		if (!foundALetter)
+			hangmanStage.increment(c);
 	}
 
 	public static void printKnownLetters() {
 		for (int k=0; k<WORD_LENGTH; k++) {
 			System.out.print(wordArr[k].getLetter());
 		}
-		System.out.println();
+		System.out.println(" ("+WORD_LENGTH+")");
 	}
 
 }

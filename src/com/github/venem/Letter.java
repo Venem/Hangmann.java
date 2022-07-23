@@ -45,17 +45,28 @@ public class Letter {
 			return '_';
 	}
 
-	// Only returns true once if the letter has not been found before
-	public boolean foundLetter(char c) {
-		if (this.letter == c && !found) {
+	// foundLetter can return 5 options:
+	// 0: letter != char
+	// 1: letter == char (only returned the first time the letter is found)
+	// 2: letter == char
+	// 3: letter not found (only returned if no argument is passed)
+	// 4: letter found (only returned if no argument is passed)
+	// 5: unknown
+	public int foundLetter(char c) {
+		if (this.letter != c)
+			return 0;
+		else if (this.letter == c && !found) {
 			this.found = true;
-			return true;
-		}
-		return false;
-	}
-
-	public void foundLetter() {
-		foundLetter('\0');
+			return 1;
+		} else if (this.letter == c)
+			return 2;
+		else if (c == '\0') {
+			if (!found)
+				return 3;
+			else
+				return 4;
+		} else
+			return 5;
 	}
 
 }
